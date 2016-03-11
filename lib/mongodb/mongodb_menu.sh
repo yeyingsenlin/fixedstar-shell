@@ -2,12 +2,19 @@
 cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
-#加载配置参数
-. ./mongodb.conf
-mongodb_home=$mongodb_home
-mongodb_data=$mongodb_data
-mongodb_bin=$mongodb_bin
-mongodb_conf=$mongodb_conf
+
+#加载项目配置文件
+local_conf()
+{
+	#加载配置参数
+    include_conf "mongodb"
+	mongodb_home=$mongodb_home
+	mongodb_data=$mongodb_data
+	mongodb_bin=$mongodb_bin
+	mongodb_conf=$mongodb_conf
+}
+local_conf
+
 mongodb_exec=$mongodb_exec
 
 #设置执行权限 
@@ -120,6 +127,7 @@ main()
 		;;
 		99)
 		vi ./mongodb.conf
+		local_conf
 		;;
 		*)
 		warn "未选择，退出"

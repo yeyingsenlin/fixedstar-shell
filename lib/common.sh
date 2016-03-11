@@ -1,5 +1,43 @@
 #!/bin/bash
 
+# 配置项
+conf_target="local"
+# aliyun 如果使用阿里云请开启此项
+#conf_target="ali"
+
+include_conf()
+{
+    local name="$1"
+    local file="./${name}.local.conf"
+    if [ ! -f "${file}" ]; then
+		err "加载配置文件失败 ${file} ，请配置好文件路径后重试"
+		exit 2
+    fi
+    . "${file}"
+
+	file="./${name}.${conf_target}.conf"
+	if [ -f "${file}" ]; then
+        . "${file}"
+	fi
+}
+
+getFileCount()
+{
+	local count=0
+	# 检查目录是否为空
+	local files=`ls ${1}`
+	if [ -z "${files}" ]; then
+		echo $count
+		return
+	fi
+
+	for v in $files
+	do
+		count=`expr $count + 1`;
+	done
+	echo $count
+}
+
 to_star()
 {
 	echo ${1//"*"/"\052"} 

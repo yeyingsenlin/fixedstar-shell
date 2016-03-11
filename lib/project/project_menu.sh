@@ -2,18 +2,24 @@
 cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
-#加载配置文件
-. ./project.conf
-project_exec=$project_exec
-templete=$templete
-templete_conf=$templete_conf
-#项目发布根目录
-project_root=$(getAbsPath ${project_root})
-#项目发布根目录不存在时，就创建
-if [ ! -d "${project_root}" ]; then
-	mkdir "${project_root}"
-fi
-check777 $project_exec
+
+#加载项目配置文件
+local_conf()
+{
+	#加载配置文件
+    include_conf "project"
+	project_exec=$project_exec
+	templete=$templete
+	templete_conf=$templete_conf
+	#项目发布根目录
+	project_root=$(getAbsPath ${project_root})
+	#项目发布根目录不存在时，就创建
+	if [ ! -d "${project_root}" ]; then
+		mkdir "${project_root}"
+	fi
+	check777 $project_exec
+}
+local_conf
 
 create_project()
 {
@@ -62,6 +68,7 @@ main() {
 		;;
 		99)
 		vi ./project.conf
+		local_conf
 		;;
 		*)
 		if (( arg > 0 )) && (( arg <= len )); then

@@ -2,12 +2,19 @@
 cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
-#加载配置
-. ./nginx.conf
-nginx_exec=$nginx_exec
-nginx_root=$nginx_root
-#设置执行权限 
-check777 $nginx_exec
+
+#加载项目配置文件
+local_conf()
+{
+	#加载配置
+    include_conf "nginx"
+	nginx_exec=$nginx_exec
+	nginx_root=$nginx_root
+	nginx_user=$nginx_user
+	#设置执行权限
+	check777 $nginx_exec
+}
+local_conf
 
 nginx()
 {
@@ -37,7 +44,7 @@ default_conf()
 	if [ "${arg}" = "" ]; then
 		arg=${def}
 	fi
-	vi "${nginx_root}/conf.d/${arg}"
+	vi "${nginx_user}/${arg}"
 }
 
 
@@ -89,6 +96,7 @@ main()
 		;;
 		99)
 		vi ./nginx.conf
+		local_conf
 		;;
 		*)
 		warn "未选择，退出"

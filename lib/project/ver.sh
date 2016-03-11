@@ -3,7 +3,7 @@ cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
 #加载配置文件
-. ./project.conf
+include_conf "project"
 
 
 #操作项目名称

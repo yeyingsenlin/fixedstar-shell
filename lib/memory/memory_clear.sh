@@ -5,7 +5,8 @@ cd "$(dirname $0)"
 # 加载共用代码
 . ../common.sh
 #加载配置文件
-. ./memory.conf
+include_conf "memory"
+
 log_path="$(getAbsFilePath $log_path)"
 mem_auto_clear=$mem_auto_clear
 

@@ -3,47 +3,15 @@ cd "$(dirname $0)"
 # 加载共用代码
 . ../common.sh
 #加载配置文件
-. ./project.conf
+. ./conf.sh
+
 project_ver=$project_ver
-nodejs_exec=$nodejs_exec
-back_exec=$back_exec
+my_nodejs_exec=$my_nodejs_exec
+my_back_exec=$my_back_exec
 
 check777 $project_ver
-check777 $nodejs_exec
-check777 $back_exec
-
-#操作项目名称
-project_name=$1
-
-#项目发布根目录
-project_root="${project_root}/${project_name}"
-default_conf="${project_root}/default.conf"
-
-
-#加载项目配置文件
-local_conf()
-{
-	if [ ! -d "${project_root}" ]; then
-		err "项目目录不存在，请先创建项目！"
-		exit 2
-	fi
-	. $default_conf
-	local cur="$(pwd)"
-	cd "${project_root}"
-	server_name=$server_name
-	server_local=$server_local
-	if [ "$server_local" = "1" ]; then
-		server_build=$(getAbsPath ${server_local_build})
-	else 
-		server_build=$(getAbsPath ${server_build})
-	fi
-	server_debug=$(getAbsPath ${server_debug})
-	server_log=$(getAbsPath ${server_log})
-	server_ftp=$(getAbsPath ${server_ftp})
-	back_log_zip=$(getAbsFilePath ${back_log_zip})
-	cd $cur
-}
-local_conf
+check777 $my_nodejs_exec
+check777 $my_back_exec
 
 edit_config()
 {
@@ -60,35 +28,29 @@ auto()
 		warn "取消执行，退出"
 		return 
 	fi
-	$project_ver "auto" $project_name
+	$project_ver "auto" "${project_name}"
 	stop
 	start
 }
 
 debug()
 {
-	$project_ver "debug" $project_name
+	$project_ver "debug" "${project_name}"
 }
 
 build()
 {
-	$project_ver "build" $project_name
+	$project_ver "build" "${project_name}"
 }
 
 clear_debug()
 {
-	$project_ver "clean" $project_name
+	$project_ver "clean" "${project_name}"
 }
 
 nodejs()
 {
-	local s_name="${1}"
-	local execName="${2}"
-	local is_development="${3}"
-	if [ "$is_development" = "" ]; then
-		is_development="d"
-	fi
-	$nodejs_exec "$s_name" "$execName" "$is_development" "$server_build" "$server_log"
+	$my_nodejs_exec "${project_name}" "${1}" "${2}" "${3}"
 }
 
 start()
@@ -138,15 +100,15 @@ status()
 
 set_timer_task()
 {
-	local execfile=$(getAbsFilePath ${nodejs_exec})
+	local execfile=$(getAbsFilePath ${my_nodejs_exec})
 	local timearg=$(to_star "*/1 * * * *")
-	timer_task "${timearg} sh ${execfile} ${server_name} start_back p $server_build $server_log"
+	timer_task "${timearg} sh ${execfile} ${project_name} ${server_name} start_back p"
 }
 
 set_start_config()
 {
-	local execfile=$(getAbsFilePath ${nodejs_exec})
-	start_config "${execfile} ${server_name} start_back p $server_build $server_log"
+	local execfile=$(getAbsFilePath ${my_nodejs_exec})
+	start_config "${execfile} ${project_name} ${server_name} start_back p"
 }
 
 log_back()
@@ -157,13 +119,19 @@ log_back()
 		warn "取消执行，退出"
 		return 
 	fi
-	$back_exec "zip" "${server_log}" "${back_log_zip}" true
+	local isClear=""
+	arg="n"
+	read -p "备份后需要删除原日志文件吗？(y/n)${arg}:" arg
+	if [ "$arg" = "y" ]; then
+		isClear="true"
+	fi
+	$my_back_exec "${project_name}" "${isClear}"
 }
 log_auto_back()
 {
-	local execfile=$(getAbsFilePath ${back_exec})
+	local execfile=$(getAbsFilePath ${my_back_exec})
 	local timearg=$(to_star "0 3 * * 3")
-	timer_task "${timearg} sh ${execfile} ${server_log} ${back_log_zip} true"
+	timer_task "${timearg} sh ${execfile} ${project_name} true"
 }
 main() 
 {

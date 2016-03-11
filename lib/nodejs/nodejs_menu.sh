@@ -2,11 +2,16 @@
 cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
-#加载配置文件
-. ./nodejs.conf
-nodejs_exec=$nodejs_exec
+#加载项目配置文件
+local_conf()
+{
+	#加载配置参数
+    include_conf "nodejs"
 
-check777 $nodejs_exec
+	nodejs_exec=$nodejs_exec
+	check777 $nodejs_exec
+}
+local_conf
 
 
 ps_nodejs()
@@ -31,6 +36,7 @@ main() {
 		;;
 		99)
 		vi ./nodejs.conf
+		local_conf
 		;;
 		*)
 		warn "未选择，退出"

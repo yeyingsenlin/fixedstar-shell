@@ -3,7 +3,7 @@ cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
 #加载配置参数
-. ./back.conf
+include_conf "back"
 log_path="$(getAbsFilePath ${log_path})"
 
 
@@ -19,6 +19,11 @@ zip_back(){
 	fi
 	if [ ! -d "${zipPath%/*}" ]; then
 		err "压缩备份失败=========== \r\n压缩备份结果目录不存在：${zipPath} \r\n" true "${log_path}"
+		return
+	fi
+	local count=$(getFileCount "${targetDir}")
+	if (( count == 0 )); then
+		warn "压缩备份失败=========== \r\n备份源文件目录为空：${zipPath} \r\n" true "${log_path}"
 		return
 	fi
 	cd ${targetDir}

@@ -3,7 +3,8 @@ cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
 #加载配置参数
-. ./mongodb.conf
+include_conf "mongodb"
+
 log_path="$(getAbsFilePath ${log_path})"
 db_back_path="$(getAbsFilePath ${db_back_path})"
 mongodb_home=$mongodb_home

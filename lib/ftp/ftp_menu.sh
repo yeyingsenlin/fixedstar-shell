@@ -3,13 +3,19 @@ cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
 
-#加载配置文件
-. ./ftp.conf
-ftp_config=$ftp_config
-vsftpd_exec=$vsftpd_exec
+#加载项目配置文件
+local_conf()
+{
+	#加载配置文件
+	include_conf "ftp"
 
-#设置执行权限 
-check777 $vsftpd_exec
+	ftp_config=$ftp_config
+	vsftpd_exec=$vsftpd_exec
+
+	#设置执行权限
+	check777 $vsftpd_exec
+}
+local_conf
 
 exec_vsftpd()
 {
@@ -161,6 +167,7 @@ main()
 		;;
 		99)
 		vi ./ftp.conf
+		local_conf
 		;;
 		*)
 		exit 2

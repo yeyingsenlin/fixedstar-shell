@@ -2,11 +2,18 @@
 cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
-#加载配置文件
-. ./memory.conf
-mem_clear_exec="$(getAbsFilePath $mem_clear_exec)"
 
-check777 $mem_clear_exec
+#加载项目配置文件
+local_conf()
+{
+	#加载配置文件
+    include_conf "memory"
+	mem_clear_exec="$(getAbsFilePath $mem_clear_exec)"
+
+	check777 $mem_clear_exec
+}
+local_conf
+
 
 mem_clear()
 {
@@ -34,7 +41,7 @@ main()
 {
 	log "------------------------------------------------"
 	log " - 1.查看内存情况 free -m"
-	log " - 2.清理内存"
+	log " - 2.清理内存 <${mem_auto_clear}%"
 	log " - 3.设置定时自动清理内存"
 	log " - 4.清理系统临时文件"
 	log " - 99.配置本模块参数"
@@ -57,6 +64,7 @@ main()
 		;;
 		99)
 		vi ./memory.conf
+		local_conf
 		;;
 		*)
 		warn "未选择，退出"
