@@ -33,7 +33,7 @@ create_project()
 }
 
 project_main() {
-	$project_exec $project_name
+	$project_exec "$1"
 }
 
 main() {
@@ -64,9 +64,9 @@ main() {
 		vi ./project.conf
 		;;
 		*)
-		if (( arg >= 0 )) && (( arg < len )); then
+		if (( arg > 0 )) && (( arg <= len )); then
 			local project_name="${dirs[`expr $arg - 1`]}"
-			project_main ${project_name}
+			project_main "${project_name}"
 		else
 			warn "未选择，退出"
 			exit 2
