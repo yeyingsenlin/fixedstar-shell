@@ -3,15 +3,20 @@
 
 cd "$(dirname $0)"
 # 加载共用代码
-. ./common.sh
+. ../common.sh
+#加载配置文件
+. ./memory.conf
+log_path="$(getAbsFilePath $log_path)"
+mem_auto_clear=$mem_auto_clear
 
 mem_quota=$1
 if [ "${mem_quota}" = "" ]; then 
+	mem_quota=$mem_auto_clear
+fi
+if [ "${mem_quota}" = "" ]; then 
 	mem_quota=20
 fi
-logFile="${2}"
 
-# watch memory usage 
 
 watch_mem() 
 { 
@@ -24,12 +29,12 @@ watch_mem()
   #local mem_usage=$((100-memfree*100/memtotal-buffers*100/memtotal-cached*100/memtotal)) 
 
   if [ $n -lt $mem_quota ];then 
-    log "开始清理:剩余内存$n％，free:${memfree}，total:${memtotal}" true $logFile
+    log "开始清理:剩余内存$n％，free:${memfree}，total:${memtotal}" true $log_path
     echo 1 > /proc/sys/vm/drop_caches
     memtotal=`cat /proc/meminfo |grep "MemTotal"|awk '{print $2}'` 
     memfree=`cat /proc/meminfo |grep "MemFree"|awk '{print $2}'` 
     n=$((memfree*100/memtotal))
-    log "清理完成:剩余内存$n％，free:${memfree}，total:${memtotal}" false $logFile
+    log "清理完成:剩余内存$n％，free:${memfree}，total:${memtotal}" false $log_path
     return 1 
   else 
     return 0 

@@ -3,102 +3,97 @@ cd "$(dirname $0)"
 #加载公共函数
 . ./lib/common.sh
 #=========================================
-nodejsPath="./lib/nodejs_cfg.sh"
-mongodbPath="./lib/mongodb_cfg.sh"
-nginxPath="./lib/nginx_cfg.sh"
-memoryPath="./lib/memory_cfg.sh"
-logAdminPath="./lib/log_cfg.sh"
+project_menu="./lib/project/project_menu.sh"
+nodejs_menu="./lib/nodejs/nodejs_menu.sh"
+mongodb_menu="./lib/mongodb/mongodb_menu.sh"
+nginx_menu="./lib/nginx/nginx_menu.sh"
+memory_menu="./lib/memory/memory_menu.sh"
+ftp_menu="./lib/ftp/ftp_menu.sh"
 #=========================================
 #设置执行权限 
-check777 $nodejsPath
-check777 $mongodbPath
-check777 $nginxPath
-check777 $memoryPath
-check777 $logAdminPath
+check777 $project_menu
+check777 $nodejs_menu
+check777 $mongodb_menu
+check777 $nginx_menu
+check777 $memory_menu
+check777 $ftp_menu
 
-nodejs()
+project_menu()
 {
-	$nodejsPath
+	$project_menu
 }
-mongodb()
+nodejs_menu()
 {
-	$mongodbPath
+	$nodejs_menu
 }
-nginx()
+mongodb_menu()
 {
-	$nginxPath
+	$mongodb_menu
+}
+nginx_menu()
+{
+	$nginx_menu
 }
 
-memory()
+memory_menu()
 {
-	$memoryPath
+	$memory_menu
 }
-log_admin()
+log_menu()
 {
-	$logAdminPath
+	$log_menu
 }
-timer_task()
+set_ftp()
 {
-	echo "* * * * * command "
-	echo "分 时 日 月 周 命令 "
-	echo "第1列表示分钟1～59 每分钟用*或者 */1表示 "
-	echo "第2列表示小时0～23"
-	echo "第3列表示日期1～31 "
-	echo "第4列表示月份1～12 "
-	echo "第5列标识号星期0～6（0表示星期天）"
-	echo "第6列要运行的命令 "
-	local arg=""
-	read -p "确认进入crontab编辑吗？[n/y](n):" arg
-	if [ ! "$arg" = "y" ]; then
-		warn "取消操作..."
-		return 
-	fi
-	crontab -e
+	$ftp_menu
 }
 main()
 {
 	local logmsg=""
-	local logerr=""
-	if [ ! -d "$(getLogPath ./lib/)" ]; then
-		logmsg="(没有配置日志)"
-		logerr="err"
-	fi
 	log "=================================================="
 	log "欢迎使用夜影森林LINUX服务端管理工具："
-	log "1.nodejs"
-	log "2.mongodb"
-	log "3.nginx"
-	log "4.内存管理"
-	log "5.日志管理${logmsg}" false "" $logerr
-	log "6.定时任务设置"
-	log "7.开机启动设置"
+	log "1.项目管理"
+	log "2.nodejs"
+	log "3.mongodb"
+	log "4.nginx"
+	log "5.内存管理"
+	log "6.ftp"
+	log "7.定时任务设置"
+	log "8.开机启动设置"
 	log "输入其它退出"
 	log "=================================================="
 	arg=1
 	read -p "请输入选择菜单编号:" arg
 	case $arg in
 		1)
-		nodejs
+		project_menu
 		;;
 		2)
-		mongodb
+		nodejs_menu
 		;;
 		3)
-		nginx
+		mongodb_menu
 		;;
 		4)
-		memory
+		nginx_menu
 		;;
 		5)
-		log_admin
+		memory_menu
+		;;
+		5)
+		log_menu
 		;;
 		6)
-		timer_task
+		set_ftp
 		;;
 		7)
-		vi /etc/rc.local
+		timer_task
+		;;
+		8)
+		start_config
 		;;
 		*)
+		warn "未选择，退出"
 		exit 2
 		;;
 	esac
