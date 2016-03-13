@@ -133,7 +133,24 @@ log_auto_back()
 	local timearg=$(to_star "0 3 * * 3")
 	timer_task "${timearg} sh ${execfile} ${project_name} true"
 }
-main() 
+
+node_modules()
+{
+	local dir="${server_build}/node_modules"
+	if [ ! -d "${dir}" ]; then
+		err "没有找到目录 ${dir}"
+		return
+	fi
+	local tdir="${server_build}/../node_modules"
+	if [ -d "${tdir}" ]; then
+		rm -rf "${tdir}"
+	fi
+	mv "${dir}" "${tdir}"
+	log "移动目录成功"
+}
+
+
+main()
 {
 	local localstr=""
 	local disable=""
@@ -155,6 +172,7 @@ main()
 	log " - - 12.解压新版本" false "" $disable
 	log " - - 13.切换版本(build <-> debug)" false "" $disable
 	log " - - 14.清理debug目录" false "" $disable
+	log " - - 15.移动 build/node_modules 目录到上一层" false "" $disable
 	log " - - 21.日志手动备份" false "" $disable
 	log " - - 22.日志自动备份配置" false "" $disable
 	log " - - 输入其它退出"
@@ -209,6 +227,13 @@ main()
 			err "本地模式下禁用此选项"
 		else
 			clear_debug
+		fi
+		;;
+		15)
+		if [ "$server_local" = "1" ]; then
+			err "本地模式下禁用此选项"
+		else
+			node_modules
 		fi
 		;;
 		21)

@@ -33,11 +33,13 @@ start_back(){
 		else
 			export NODE_ENV=development
 		fi
+		# 自定义环境变量，记录是从后台启动
+		export FS_RUN_TYPE=back
 		# 加载一些环境变量
 		source /etc/profile
 		nohup $process_name $process_param  >> $logPath 2>&1 &
-                log "从后台启动运行成功" true $logPath
-        fi
+		log "从后台启动运行成功" true $logPath
+	fi
 }
 start(){
 	local pid=`GetPid "${process_name} ${process_param}"`
@@ -60,9 +62,9 @@ start(){
 		fi
 		# 加载一些环境变量
 		source /etc/profile
-                $process_name $process_param
-                log "启动运行成功" true $logPath
-        fi
+		$process_name $process_param
+		log "启动运行成功" true $logPath
+	fi
 }
 stop(){
 	local pid=`GetPid "${process_name} ${process_param}"`

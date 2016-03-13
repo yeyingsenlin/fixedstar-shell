@@ -16,7 +16,7 @@ local_conf
 
 ps_nodejs()
 {
-	echo $(GetPid "node " "0")
+	ps -ef | grep " [0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\} node" | grep -v "grep"
 }
 
 main() {
