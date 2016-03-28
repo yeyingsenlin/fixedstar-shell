@@ -5,6 +5,17 @@ conf_target="local"
 # aliyun 如果使用阿里云请开启此项
 #conf_target="ali"
 
+vi_conf()
+{
+    local name="$1"
+  	local arg=""
+	read -p "请输入配置文件类型(local):" arg
+	if [ "$arg" = "" ]; then
+		arg="local"
+	fi
+    local file="./${name}.${arg}.conf"
+    vi "${file}"
+}
 include_conf()
 {
     local name="$1"
@@ -21,6 +32,33 @@ include_conf()
 	fi
 }
 
+
+getInput()
+{
+	local text="$1"
+	local default="$2"
+	local default2="$3"
+	local arg=""
+	read -p "${text}" arg
+	if [ "$arg" = "" ]; then
+		echo "$default"
+		return
+    elif [ ! "$default2" = "" ]; then
+		echo "$default2"
+		return
+	fi
+    echo "$arg"
+}
+
+getFileSize()
+{
+    if [ ! -f "${1}" ]; then
+		echo 0
+		return
+    fi
+	echo `ls -l ${1} | awk '{ print $5 }'`
+}
+
 getFileCount()
 {
 	local count=0
@@ -30,12 +68,26 @@ getFileCount()
 		echo $count
 		return
 	fi
+	local ary=($files)
+#	for v in $files
+#	do
+#		count=`expr $count + 1`;
+#	done
+	echo ${#ary[*]}
+}
 
-	for v in $files
+zeroString()
+{
+	local n=$1
+	local count=$2
+	local len=${#n}
+	len=`expr $count - $len`;
+	local ret="${n}"
+	for i in `seq $len`
 	do
-		count=`expr $count + 1`;
+		ret="0"${ret}
 	done
-	echo $count
+	echo ${ret}
 }
 
 to_star()

@@ -166,7 +166,7 @@ main()
 		set_start_config
 		;;
 		99)
-		vi ./ftp.conf
+		vi_conf "ftp"
 		local_conf
 		;;
 		*)

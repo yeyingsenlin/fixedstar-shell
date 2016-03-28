@@ -95,7 +95,7 @@ main()
 		set_start_config
 		;;
 		99)
-		vi ./nginx.conf
+		vi_conf "nginx"
 		local_conf
 		;;
 		*)

@@ -35,7 +35,7 @@ main() {
 		exec_nodejs
 		;;
 		99)
-		vi ./nodejs.conf
+		vi_conf "nodejs"
 		local_conf
 		;;
 		*)

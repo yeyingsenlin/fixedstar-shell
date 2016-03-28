@@ -126,7 +126,7 @@ main()
 		set_start_config
 		;;
 		99)
-		vi ./mongodb.conf
+		vi_conf "mongodb"
 		local_conf
 		;;
 		*)

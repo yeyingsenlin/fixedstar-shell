@@ -67,7 +67,7 @@ main() {
 		vi $templete_conf
 		;;
 		99)
-		vi ./project.conf
+		vi_conf "project"
 		local_conf
 		;;
 		*)

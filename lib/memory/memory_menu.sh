@@ -63,7 +63,7 @@ main()
 		clear_sys_temp
 		;;
 		99)
-		vi ./memory.conf
+		vi_conf "memory"
 		local_conf
 		;;
 		*)

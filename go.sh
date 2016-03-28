@@ -9,6 +9,7 @@ mongodb_menu="./lib/mongodb/mongodb_menu.sh"
 nginx_menu="./lib/nginx/nginx_menu.sh"
 memory_menu="./lib/memory/memory_menu.sh"
 ftp_menu="./lib/ftp/ftp_menu.sh"
+video_menu="./lib/video/video_menu.sh"
 #=========================================
 #设置执行权限 
 check777 $project_menu
@@ -17,6 +18,7 @@ check777 $mongodb_menu
 check777 $nginx_menu
 check777 $memory_menu
 check777 $ftp_menu
+check777 $video_menu
 
 project_menu()
 {
@@ -47,6 +49,10 @@ set_ftp()
 {
 	$ftp_menu
 }
+video()
+{
+	$video_menu
+}
 main()
 {
 	local logmsg=""
@@ -60,6 +66,7 @@ main()
 	log "6.ftp"
 	log "7.定时任务设置"
 	log "8.开机启动设置"
+	log "9.视频处理"
 	log "输入其它退出"
 	log "=================================================="
 	arg=1
@@ -91,6 +98,9 @@ main()
 		;;
 		8)
 		start_config
+		;;
+		9)
+		video
 		;;
 		*)
 		warn "未选择，退出"
