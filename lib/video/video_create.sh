@@ -292,8 +292,10 @@ zipImg()
 		fi
 		rm -f ${zipPath}
 	fi
-    zip "${zipPath}" ${movieclipDir}/${videoSize}/${id}/*
-
+	local cur="$(pwd)"
+	cd ${movieclipDir}/${videoSize}/${id}
+    zip "${zipPath}" ./*
+	cd $cur
 }
 
 zipAll()
