@@ -19,14 +19,15 @@ file_templete()
 
 create_js_modules()
 {
-    local modulesPath="${root}fixedstar-js/modules"
+    local modulesPath="${root}fixedstar-js/fs_modules"
     local nodeModulesPath="${root}node_modules"
     local path=""
     local targetPath=""
     # 进入目录循环生成
 	for id in `ls ${modulesPath}`
 	do
-	    path="fixedstar-js/modules/${id}"
+	    path=$(getAbsPath "${root}fixedstar-js/fs_modules/${id}")
+	    #path="fixedstar-js/fs_modules/${id}"
 	    targetPath="${nodeModulesPath}/${id}"
         # 目录不存在
         if [ ! -d "${targetPath}" ]; then
@@ -43,7 +44,7 @@ create_gulp_modules()
     local targetPath="${root}node_modules/fixedstar-gulp"
     # 创建目录
     mkdir "${targetPath}"
-    file_templete "fixedstar-gulp" "${targetPath}/index.js"
+    file_templete "../../fixedstar-gulp" "${targetPath}/index.js"
 }
 
 clean_node_modules()

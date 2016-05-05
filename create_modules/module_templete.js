@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('../../{path}/index');
+module.exports = require('{path}/index');
