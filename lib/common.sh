@@ -41,8 +41,10 @@ getInput()
 	local arg=""
 	read -p "${text}" arg
 	if [ "$arg" = "" ]; then
-		echo "$default"
-		return
+	    if [ "$default" != "" ]; then
+		    echo "$default"
+		    return
+		fi
     elif [ ! "$default2" = "" ]; then
 		echo "$default2"
 		return

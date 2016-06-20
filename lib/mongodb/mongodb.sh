@@ -2,15 +2,22 @@
 cd "$(dirname $0)"
 #加载公共函数
 . ../common.sh
-#加载配置参数
-include_conf "mongodb"
+
+#加载项目配置文件
+local_conf()
+{
+	#加载配置参数
+    include_conf "mongodb"
+	mongodb_home=$mongodb_home
+	mongodb_data=$mongodb_data
+	mongodb_bin=$mongodb_bin
+	mongodb_conf=$mongodb_conf
+}
+local_conf
 
 log_path="$(getAbsFilePath ${log_path})"
+db_back="$(getAbsFilePath ${db_back})"
 db_back_path="$(getAbsFilePath ${db_back_path})"
-mongodb_home=$mongodb_home
-mongodb_data=$mongodb_data
-mongodb_bin=$mongodb_bin
-mongodb_conf=$mongodb_conf
 pidfile=$(GetCfg "$mongodb_conf" "pidfilepath")
 execstr="$mongodb_home/bin/mongod -f $mongodb_conf"
 
@@ -60,8 +67,44 @@ mongo(){
     fi
 }
 back(){
-	$back_exec "zip" "${mongodb_data}" "${db_back_path}"
+    local dbname="${1}"
+    local dump="${db_back}/${dbname}"
+    if [ "$dbname" != "" ]; then
+        $mongodb_home/bin/mongodump -d ${dbname} -o ${dump}
+    else
+        dbname="all"
+        dump="${db_back}/${dbname}"
+        $mongodb_home/bin/mongodump -o ${dump}
+    fi
+	$back_exec "zip" "${dump}" "${db_back_path}" true
 }
+
+restore(){
+    local dbname="${1}"
+    local zipName="${2}"
+    local reName="${3}"
+    echo "重9999999 ${reName}"
+    if [ "${dbname}" = "" ]; then
+        echo "没有指定恢复库名称"
+        return
+    fi
+    if [ "${zipName}" = "" ]; then
+        echo "没有指定压缩包名称"
+        return
+    fi
+    local dump="${db_back}/${dbname}"
+	$back_exec "unzip" "${db_back}" "${db_back}/${zipName}"
+    if [ ! -d "${dump}" ]; then
+        return
+    fi
+    if [ "${reName}" = "" ]; then
+        $mongodb_home/bin/mongorestore -d ${dbname} ${dump} --drop
+    else
+        $mongodb_home/bin/mongorestore -d ${reName} ${dump}
+    fi
+    rm -rf ${dump}
+}
+
 
 case "$1" in
     start)
@@ -85,6 +128,9 @@ case "$1" in
         config
         ;;
     back)
-        back
+        back "$2"
+        ;;
+    restore)
+        restore "$2" "$3" "$4"
         ;;
 esac

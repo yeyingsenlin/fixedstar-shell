@@ -15,6 +15,8 @@ local_conf()
 }
 local_conf
 
+db_back="$(getAbsFilePath ${db_back})"
+
 mongodb_exec=$mongodb_exec
 
 #设置执行权限 
@@ -58,19 +60,31 @@ mongod()
 }
 mongodb_back()
 {
-	local arg="n"
-	read -p "确定需要立即备份吗？(y/n)${arg}:" arg
+    local arg=$(getInput "确定需要立即备份吗？(y/n)n:" "n" "y")
 	if [ ! "$arg" = "y" ]; then
 		warn "取消执行，退出"
 		return 
 	fi
-	$mongodb_exec "back"
+    arg=$(getInput "输入需要备份的库名称:")
+	$mongodb_exec "back" "${arg}"
+}
+mongodb_restore()
+{
+    local arg=$(getInput "确定需要恢复备份吗？(y/n)n:" "n" "y")
+	if [ ! "$arg" = "y" ]; then
+		warn "取消执行，退出"
+		return
+	fi
+    arg=$(getInput "输入需要恢复的原库名称:")
+    local zipName=$(getInput "输入备份库的压缩包名称:")
+    local reName=$(getInput "输入需要恢复的新库名称，默认为${arg}(将替换原库):" "${arg}")
+	$mongodb_exec "restore" "${arg}" "${zipName}" "${reName}"
 }
 mongodb_auto_back()
 {
 	local execfile=$(getAbsFilePath ${mongodb_exec})
 	local timearg=$(to_star "30 3 * * 3")
-	timer_task "${timearg} sh $execfile back"
+	timer_task "${timearg} sh $execfile back [库名/空为全部备份]"
 }
 
 mongod_conf()
@@ -97,10 +111,11 @@ main()
 	log "------------------------------------------------"
 	log " - 0.参数配置 (${mongodb_conf})"
 	log " - 1.mongod 命令操作"
-	log " - 2.mongodb 数据库手动备份 (${mongodb_data})"
-	log " - 3.mongodb 数据库自动备份配置"
-	log " - 4.mongod 定时检查是否启动，未启动时拉起"
-	log " - 5.mongod 开机时启动配置"
+	log " - 2.mongodb 数据库手动备份 (${db_back})"
+	log " - 3.mongodb 数据库手动恢复 (${db_back})"
+	log " - 4.mongodb 数据库自动备份配置"
+	log " - 5.mongod 定时检查是否启动，未启动时拉起"
+	log " - 6.mongod 开机时启动配置"
 	log " - 99.配置本模块参数"
 	log " - 输入其它退出"
 	log "------------------------------------------------"
@@ -117,12 +132,15 @@ main()
 		mongodb_back
 		;;
 		3)
-		mongodb_auto_back
+		mongodb_restore
 		;;
 		4)
-		set_timer_task
+		mongodb_auto_back
 		;;
 		5)
+		set_timer_task
+		;;
+		6)
 		set_start_config
 		;;
 		99)
