@@ -26,8 +26,8 @@ create_js_modules()
     # 进入目录循环生成
 	for id in `ls ${modulesPath}`
 	do
-	    path=$(getAbsPath "${root}fixedstar-js/fs_modules/${id}")
-	    #path="fixedstar-js/fs_modules/${id}"
+	    #path=$(getAbsPath "${root}fixedstar-js/fs_modules/${id}")
+	    path="../../../fixedstar/fixedstar-js/fs_modules/${id}"
 	    targetPath="${nodeModulesPath}/${id}"
         # 目录不存在
         if [ ! -d "${targetPath}" ]; then
