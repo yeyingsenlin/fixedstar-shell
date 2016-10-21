@@ -97,6 +97,10 @@ restore(){
     if [ ! -d "${dump}" ]; then
         return
     fi
+    #
+    echo "use ${dbname}
+    db.dropDatabase()" | $mongodb_home/bin/mongo
+
     if [ "${reName}" = "" ]; then
         $mongodb_home/bin/mongorestore -d ${dbname} ${dump} --drop
     else

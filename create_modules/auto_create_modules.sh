@@ -19,23 +19,29 @@ file_templete()
 
 create_js_modules()
 {
-    local modulesPath="${root}fixedstar-js/fs_modules"
+#    local modulesPath="${root}fixedstar-js/fs_modules"
+    local modulesPath="${root}fixedstar/engine/fx-modules"
     local nodeModulesPath="${root}node_modules"
     local path=""
     local targetPath=""
     # 进入目录循环生成
 	for id in `ls ${modulesPath}`
 	do
-	    #path=$(getAbsPath "${root}fixedstar-js/fs_modules/${id}")
-	    path="../../../fixedstar/fixedstar-js/fs_modules/${id}"
-	    targetPath="${nodeModulesPath}/${id}"
-        # 目录不存在
-        if [ ! -d "${targetPath}" ]; then
-            # 创建目录
-            mkdir "${targetPath}"
-            file_templete "${path}" "${targetPath}/index.js"
-            #return
-        fi
+        # 进入目录循环生成
+        for ver in `ls ${modulesPath}/${id}`
+        do
+            #path=$(getAbsPath "${root}fixedstar-js/fs_modules/${id}")
+    #	    path="../../../fixedstar-js/fs_modules/${id}"
+            path="../../../fixedstar/fixedstar/engine/fx-modules/${id}/${ver}"
+            targetPath="${nodeModulesPath}/${id}@${ver}"
+            # 目录不存在
+            if [ ! -d "${targetPath}" ]; then
+                # 创建目录
+                mkdir "${targetPath}"
+                file_templete "${path}" "${targetPath}/index.js"
+                #return
+            fi
+        done
 	done
 }
 
@@ -61,7 +67,7 @@ clean_node_modules()
 clean_node_modules
 
 # 生成gulp到外部引用的模块
-create_gulp_modules
+#create_gulp_modules
 
 # 生成js模块到外部引用的模块
 create_js_modules
