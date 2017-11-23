@@ -29,10 +29,13 @@ config() {
 	vi $mongodb_conf
 }
 start(){
-    if  ps axu|grep mongod|grep -v grep >/dev/null
-    then
-        $execstr
-        log "成功运行" true "${log_path}"
+	local pid=$(GetPid "$execstr")
+	if [ "$pid" == "" ]; then
+        #if  ps axu|grep mongod|grep -v grep >/dev/null
+        #then
+            $execstr
+            log "成功运行" true "${log_path}"
+        #fi
     fi
 }
 stop(){
@@ -83,7 +86,6 @@ restore(){
     local dbname="${1}"
     local zipName="${2}"
     local reName="${3}"
-    echo "重9999999 ${reName}"
     if [ "${dbname}" = "" ]; then
         echo "没有指定恢复库名称"
         return

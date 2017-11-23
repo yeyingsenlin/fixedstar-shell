@@ -3,6 +3,7 @@ cd "$(dirname $0)"
 #加载公共函数
 . ./lib/common.sh
 #=========================================
+git_menu="./lib/git/git_menu.sh"
 project_menu="./lib/project/project_menu.sh"
 nodejs_menu="./lib/nodejs/nodejs_menu.sh"
 mongodb_menu="./lib/mongodb/mongodb_menu.sh"
@@ -10,6 +11,7 @@ nginx_menu="./lib/nginx/nginx_menu.sh"
 memory_menu="./lib/memory/memory_menu.sh"
 ftp_menu="./lib/ftp/ftp_menu.sh"
 video_menu="./lib/video/video_menu.sh"
+keystore_menu="./lib/android/keystore.sh"
 #=========================================
 #设置执行权限 
 check777 $project_menu
@@ -19,7 +21,12 @@ check777 $nginx_menu
 check777 $memory_menu
 check777 $ftp_menu
 check777 $video_menu
+check777 $keystore_menu
 
+git_menu()
+{
+	$git_menu
+}
 project_menu()
 {
 	$project_menu
@@ -53,6 +60,10 @@ video()
 {
 	$video_menu
 }
+keystore_menu()
+{
+	$keystore_menu
+}
 main()
 {
 	local logmsg=""
@@ -67,6 +78,8 @@ main()
 	log "7.定时任务设置"
 	log "8.开机启动设置"
 	log "9.视频处理"
+	log "10.git"
+	log "11.android keystore 签名证书"
 	log "输入其它退出"
 	log "=================================================="
 	arg=1
@@ -101,6 +114,12 @@ main()
 		;;
 		9)
 		video
+		;;
+		10)
+		git_menu
+		;;
+		11)
+		keystore_menu
 		;;
 		*)
 		warn "未选择，退出"

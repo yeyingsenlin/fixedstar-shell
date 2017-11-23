@@ -1,3 +1,13 @@
 #!/bin/bash
-open -a "Google Chrome" --args --disable-web-security
+open -a "Google Chrome" --args --disable-web-security --user-data-dir
 exit
+
+#
+#最新版49要用新的参数 加--user-data-dir
+#windows:
+#"C:\Program Files\Google\Chrome\Application\chrome.exe" --args --disable-web-security --user-data-dir
+#
+#OSX:
+#$ open -a Google\ Chrome --args --disable-web-security --user-data-dir
+
+### chrome 新版本不支持在这里运行跨域，请将上面代码复制到命令行运行即可
